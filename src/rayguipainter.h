@@ -5,6 +5,11 @@
 
 #include "raygui.h"
 
+typedef struct GuiPainterDropdownBoxOptions {
+    int active;
+    bool edit;
+} GuiPainterDropdownBoxOptions;
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -14,6 +19,7 @@ void GuiPainterSetCursorPos(Vector2 pos);
 bool GuiPainterWindowBox(Vector2 size, const char* title);
 void GuiPainterLabel(const char* text);
 bool GuiPainterButton(const char* text);
+bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
 
 #if defined(__cplusplus)
 }
@@ -31,6 +37,43 @@ static Vector2 guiPainterButtonPadding = { 6.0f, 4.0f };
 static Vector2 GuiPainterTextSize(const char* text)
 {
     return MeasureTextEx(GuiGetFont(), text, (float)GuiGetStyle(DEFAULT, TEXT_SIZE), (float)GuiGetStyle(DEFAULT, TEXT_SPACING));
+}
+
+static Vector2 GuiPainterLargestTextSize(const char* text)
+{
+    Vector2 result = { 0 };
+
+    char buffer[1024] = { 0 };
+    const char* ptr = text;
+    int index = 0;
+    while (*ptr != 0)
+    {
+        if (*ptr == ';')
+        {
+            buffer[index] = 0;
+            Vector2 size = GuiPainterTextSize(buffer);
+            result.x = size.x > result.x ? size.x : result.x;
+            result.y = size.y > result.y ? size.y : result.y;
+            memset(buffer, 0, sizeof(buffer));
+            index = 0;
+        }
+        else
+        {
+            buffer[index++] = *ptr;
+        }
+
+        ptr++;
+    }
+
+    if (index > 0)
+    {
+        buffer[index] = 0;
+        Vector2 size = GuiPainterTextSize(buffer);
+        result.x = size.x > result.x ? size.x : result.x;
+        result.y = size.y > result.y ? size.y : result.y;
+    }
+
+    return result;
 }
 
 void GuiPainterSetCursorPos(Vector2 pos)
@@ -65,6 +108,24 @@ bool GuiPainterButton(const char* text)
     };
     guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
     return GuiButton(bounds, text);
+}
+
+bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options)
+{
+    const Vector2 maxSize = GuiPainterLargestTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        maxSize.x + guiPainterButtonPadding.x + (float)GuiGetStyle(DROPDOWNBOX, ARROW_PADDING) + RAYGUI_ICON_SIZE,
+        maxSize.y + guiPainterButtonPadding.y * 2.0f
+    };
+    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    if (GuiDropdownBox(bounds, text, &options->active, options->edit))
+    {
+        options->edit = !options->edit;
+        return true;
+    }
+    return false;
 }
 
 #endif // RAYGUIPAINTER_IMPLEMENTATION
