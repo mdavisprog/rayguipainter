@@ -19,6 +19,7 @@ void GuiPainterSetCursorPos(Vector2 pos);
 bool GuiPainterWindowBox(Vector2 size, const char* title);
 void GuiPainterLabel(const char* text);
 bool GuiPainterButton(const char* text);
+bool GuiPainterLabelButton(const char* text);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
 
 #if defined(__cplusplus)
@@ -108,6 +109,19 @@ bool GuiPainterButton(const char* text)
     };
     guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
     return GuiButton(bounds, text);
+}
+
+bool GuiPainterLabelButton(const char* text)
+{
+    const Vector2 textSize = GuiPainterTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        textSize.x + guiPainterButtonPadding.x * 2.0f,
+        textSize.y + guiPainterButtonPadding.y * 2.0f
+    };
+    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    return GuiLabelButton(bounds, text);
 }
 
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options)
