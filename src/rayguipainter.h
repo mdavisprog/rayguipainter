@@ -20,6 +20,7 @@ bool GuiPainterWindowBox(Vector2 size, const char* title);
 void GuiPainterLabel(const char* text);
 bool GuiPainterButton(const char* text);
 bool GuiPainterLabelButton(const char* text);
+bool GuiPainterToggle(const char* text, bool* active);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
 
 #if defined(__cplusplus)
@@ -122,6 +123,20 @@ bool GuiPainterLabelButton(const char* text)
     };
     guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
     return GuiLabelButton(bounds, text);
+}
+
+bool GuiPainterToggle(const char* text, bool* active)
+{
+    const Vector2 textSize = GuiPainterTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        textSize.x + guiPainterButtonPadding.x * 2.0f,
+        textSize.y + guiPainterButtonPadding.y * 2.0f
+    };
+    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    *active = GuiToggle(bounds, text, *active);
+    return *active;
 }
 
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options)
