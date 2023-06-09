@@ -22,6 +22,7 @@ bool GuiPainterButton(const char* text);
 bool GuiPainterLabelButton(const char* text);
 bool GuiPainterToggle(const char* text, bool* active);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
+bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 
 #if defined(__cplusplus)
 }
@@ -35,6 +36,7 @@ static Vector2 guiPainterCursorPos = { 0.0f, 0.0f };
 static Vector2 guiPainterCursorSize = { 0.0f, 0.0f };
 static Vector2 guiPainterControlSpacing = { 4.0f, 4.0f };
 static Vector2 guiPainterButtonPadding = { 6.0f, 4.0f };
+static float guiPainterTextBoxWidth = 100.0f;
 
 static Vector2 GuiPainterTextSize(const char* text)
 {
@@ -152,6 +154,24 @@ bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* optio
     if (GuiDropdownBox(bounds, text, &options->active, options->edit))
     {
         options->edit = !options->edit;
+        return true;
+    }
+    return false;
+}
+
+bool GuiPainterTextBox(char* text, int textSize, bool* editMode)
+{
+    const Vector2 boxSize = GuiPainterTextSize(" ");
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        guiPainterTextBoxWidth,
+        boxSize.y + guiPainterButtonPadding.y * 2.0f
+    };
+    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    if (GuiTextBox(bounds, text, textSize, *editMode))
+    {
+        *editMode = !(*editMode);
         return true;
     }
     return false;
