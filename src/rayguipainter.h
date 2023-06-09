@@ -17,6 +17,7 @@ extern "C" {
 void GuiPainterSetCursorPos(Vector2 pos);
 
 bool GuiPainterWindowBox(Vector2 size, const char* title);
+void GuiPainterLine(const char* text);
 void GuiPainterLabel(const char* text);
 bool GuiPainterButton(const char* text);
 bool GuiPainterLabelButton(const char* text);
@@ -91,6 +92,19 @@ bool GuiPainterWindowBox(Vector2 size, const char* title)
     guiPainterCursorPos.y += RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT + guiPainterControlSpacing.y;
     guiPainterCursorSize = size;
     return GuiWindowBox(bounds, title);
+}
+
+void GuiPainterLine(const char* text)
+{
+    const Vector2 textSize = GuiPainterTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        guiPainterCursorSize.x - guiPainterControlSpacing.x * 2.0f,
+        textSize.y == 0.0f ? (float)GuiGetStyle(DEFAULT, TEXT_SIZE) : textSize.y
+    };
+    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    GuiLine(bounds, text);
 }
 
 void GuiPainterLabel(const char* text)
