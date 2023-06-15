@@ -15,6 +15,7 @@ extern "C" {
 #endif
 
 void GuiPainterSetCursorPos(Vector2 pos);
+void GuiPainterSameLine();
 
 bool GuiPainterWindowBox(Vector2 size, const char* title);
 void GuiPainterLine(const char* text);
@@ -34,6 +35,7 @@ bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 #if defined(RAYGUIPAINTER_IMPLEMENTATION)
 
 static Vector2 guiPainterCursorPos = { 0.0f, 0.0f };
+static Vector2 guiPainterCursorPrevPos = { 0.0f, 0.0f };
 static Vector2 guiPainterCursorSize = { 0.0f, 0.0f };
 static Vector2 guiPainterControlSpacing = { 4.0f, 4.0f };
 static Vector2 guiPainterButtonPadding = { 6.0f, 4.0f };
@@ -81,9 +83,22 @@ static Vector2 GuiPainterLargestTextSize(const char* text)
     return result;
 }
 
+static void GuiPainterAdvanceCursorLine(Rectangle controlBounds)
+{
+    guiPainterCursorPrevPos.x = controlBounds.x + controlBounds.width;
+    guiPainterCursorPrevPos.y = guiPainterCursorPos.y;
+    guiPainterCursorPos.x = 0.0f;
+    guiPainterCursorPos.y += controlBounds.height + guiPainterControlSpacing.y;
+}
+
 void GuiPainterSetCursorPos(Vector2 pos)
 {
     guiPainterCursorPos = pos;
+}
+
+void GuiPainterSameLine()
+{
+    guiPainterCursorPos = guiPainterCursorPrevPos;
 }
 
 bool GuiPainterWindowBox(Vector2 size, const char* title)
@@ -112,7 +127,7 @@ void GuiPainterLabel(const char* text)
     const Vector2 textSize = GuiPainterTextSize(text);
     const Rectangle bounds = { guiPainterCursorPos.x + guiPainterControlSpacing.x, guiPainterCursorPos.y, textSize.x + 6.0f, textSize.y };
     GuiLabel(bounds, text);
-    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    GuiPainterAdvanceCursorLine(bounds);
 }
 
 bool GuiPainterButton(const char* text)
@@ -124,7 +139,7 @@ bool GuiPainterButton(const char* text)
         textSize.x + guiPainterButtonPadding.x * 2.0f,
         textSize.y + guiPainterButtonPadding.y * 2.0f
     };
-    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    GuiPainterAdvanceCursorLine(bounds);
     return GuiButton(bounds, text);
 }
 
@@ -137,7 +152,7 @@ bool GuiPainterLabelButton(const char* text)
         textSize.x + guiPainterButtonPadding.x * 2.0f,
         textSize.y + guiPainterButtonPadding.y * 2.0f
     };
-    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    GuiPainterAdvanceCursorLine(bounds);
     return GuiLabelButton(bounds, text);
 }
 
@@ -150,7 +165,7 @@ bool GuiPainterToggle(const char* text, bool* active)
         textSize.x + guiPainterButtonPadding.x * 2.0f,
         textSize.y + guiPainterButtonPadding.y * 2.0f
     };
-    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    GuiPainterAdvanceCursorLine(bounds);
     *active = GuiToggle(bounds, text, *active);
     return *active;
 }
@@ -164,7 +179,7 @@ bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* optio
         maxSize.x + guiPainterButtonPadding.x + (float)GuiGetStyle(DROPDOWNBOX, ARROW_PADDING) + RAYGUI_ICON_SIZE,
         maxSize.y + guiPainterButtonPadding.y * 2.0f
     };
-    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    GuiPainterAdvanceCursorLine(bounds);
     if (GuiDropdownBox(bounds, text, &options->active, options->edit))
     {
         options->edit = !options->edit;
@@ -182,7 +197,7 @@ bool GuiPainterTextBox(char* text, int textSize, bool* editMode)
         guiPainterTextBoxWidth,
         boxSize.y + guiPainterButtonPadding.y * 2.0f
     };
-    guiPainterCursorPos.y += bounds.height + guiPainterControlSpacing.y;
+    GuiPainterAdvanceCursorLine(bounds);
     if (GuiTextBox(bounds, text, textSize, *editMode))
     {
         *editMode = !(*editMode);
