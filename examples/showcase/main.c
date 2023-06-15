@@ -29,6 +29,8 @@ int main()
 
         GuiPainterLabel("Label");
         GuiPainterButton("Button");
+        GuiPainterSameLine();
+        GuiPainterButton("Button 2");
         GuiPainterLabelButton("Label Button");
         Toggle = GuiPainterToggle("Toggle", &Toggle);
         GuiPainterTextBox(TextBox, sizeof(TextBox), &TextBoxEdit);
