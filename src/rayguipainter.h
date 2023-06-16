@@ -23,6 +23,7 @@ void GuiPainterLabel(const char* text);
 bool GuiPainterButton(const char* text);
 bool GuiPainterLabelButton(const char* text);
 bool GuiPainterToggle(const char* text, bool* active);
+int GuiPainterToggleGroup(const char* text, int* active);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
 bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 
@@ -170,6 +171,24 @@ bool GuiPainterToggle(const char* text, bool* active)
     *active = GuiToggle(bounds, text, *active);
 #else
     GuiToggle(bounds, text, active);
+#endif
+    return *active;
+}
+
+int GuiPainterToggleGroup(const char* text, int* active)
+{
+    const Vector2 maxSize = GuiPainterLargestTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        maxSize.x + guiPainterButtonPadding.x * 2.0f,
+        maxSize.y + guiPainterButtonPadding.y * 2.0f
+    };
+    GuiPainterAdvanceCursorLine(bounds);
+#if RAYGUI_VERSION_MAJOR < 4
+    *active = GuiToggleGroup(bounds, text, *active);
+#else
+    GuiToggleGroup(bounds, text, active);
 #endif
     return *active;
 }
