@@ -1,6 +1,6 @@
 rayguipainter is a header only library built on top of raylib and raygui. This library makes it easier to use the raygui API by calculating the positioning and bounds of the controls itself instead of passing an explicit bounds for every control. This allows for quickly creating a tools interface for quick prototyping. This was inspired by Dear ImGUI and how controls are automatically placed through usage of the API.
 
-This library has been tested with raylib 4.5 and raygui 3.6.
+This library has been tested with raylib 4.5 and both raygui 3.6 and 4.0 which is on the main branch.
 
 Below is some example code using the rayguipainter API.
 
