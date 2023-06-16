@@ -166,7 +166,11 @@ bool GuiPainterToggle(const char* text, bool* active)
         textSize.y + guiPainterButtonPadding.y * 2.0f
     };
     GuiPainterAdvanceCursorLine(bounds);
+#if RAYGUI_VERSION_MAJOR < 4
     *active = GuiToggle(bounds, text, *active);
+#else
+    GuiToggle(bounds, text, active);
+#endif
     return *active;
 }
 
