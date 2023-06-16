@@ -15,6 +15,7 @@ int main()
     const Vector2 WindowBoxSize = { (float)WindowWidth, (float)WindowHeight };
 
     bool Toggle = false;
+    int ToggleGroup = 0;
     char TextBox[255] =  { 0 };
     bool TextBoxEdit = false;
     GuiPainterDropdownBoxOptions DropdownBoxOptions = { 0 };
@@ -33,6 +34,7 @@ int main()
         GuiPainterButton("Button 2");
         GuiPainterLabelButton("Label Button");
         Toggle = GuiPainterToggle("Toggle", &Toggle);
+        GuiPainterToggleGroup("One;Two;Three", &ToggleGroup);
         GuiPainterTextBox(TextBox, sizeof(TextBox), &TextBoxEdit);
         GuiPainterDropdownBox("Red;Green;Blue", &DropdownBoxOptions);
 
