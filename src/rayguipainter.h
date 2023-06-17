@@ -24,6 +24,7 @@ bool GuiPainterButton(const char* text);
 bool GuiPainterLabelButton(const char* text);
 bool GuiPainterToggle(const char* text, bool* active);
 int GuiPainterToggleGroup(const char* text, int* active);
+bool GuiPainterCheckBox(const char* text, bool* checked);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
 bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 
@@ -191,6 +192,31 @@ int GuiPainterToggleGroup(const char* text, int* active)
     GuiToggleGroup(bounds, text, active);
 #endif
     return *active;
+}
+
+bool GuiPainterCheckBox(const char* text, bool* checked)
+{
+    const float size = (float)GuiGetStyle(DEFAULT, TEXT_SIZE);
+    const Vector2 textSize = GuiPainterTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        size + guiPainterButtonPadding.x * 2.0f,
+        size + guiPainterButtonPadding.y * 2.0f
+    };
+    const Rectangle advanceBounds = {
+        bounds.x,
+        bounds.y,
+        bounds.width + textSize.x + GuiGetStyle(CHECKBOX, TEXT_PADDING),
+        bounds.height
+    };
+    GuiPainterAdvanceCursorLine(advanceBounds);
+#if RAYGUI_VERSION_MAJOR < 4
+    *checked = GuiCheckBox(bounds, text, *checked);
+    return *checked;
+#else
+    return GuiCheckBox(bounds, text, checked);
+#endif
 }
 
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options)
