@@ -10,6 +10,13 @@ typedef struct GuiPainterDropdownBoxOptions {
     bool edit;
 } GuiPainterDropdownBoxOptions;
 
+typedef struct GuiPainterValueBoxOptions {
+    int value;
+    int minValue;
+    int maxValue;
+    bool edit;
+} GuiPainterValueBoxOptions;
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -26,6 +33,7 @@ bool GuiPainterToggle(const char* text, bool* active);
 int GuiPainterToggleGroup(const char* text, int* active);
 bool GuiPainterCheckBox(const char* text, bool* checked);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
+bool GuiPainterValueBox(const char* text, GuiPainterValueBoxOptions* options);
 bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 
 #if defined(__cplusplus)
@@ -230,6 +238,32 @@ bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* optio
     };
     GuiPainterAdvanceCursorLine(bounds);
     if (GuiDropdownBox(bounds, text, &options->active, options->edit))
+    {
+        options->edit = !options->edit;
+        return true;
+    }
+    return false;
+}
+
+bool GuiPainterValueBox(const char* text, GuiPainterValueBoxOptions* options)
+{
+    const Vector2 textSize = GuiPainterTextSize(text);
+    const Vector2 maxValueSize = GuiPainterTextSize(TextFormat("%9d", options->maxValue));
+    const bool leftAligned = GuiGetStyle(VALUEBOX, TEXT_ALIGNMENT) == TEXT_ALIGN_LEFT;
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x + (leftAligned ? textSize.x + GuiGetStyle(VALUEBOX, TEXT_PADDING) : 0.0f),
+        guiPainterCursorPos.y,
+        maxValueSize.x + guiPainterButtonPadding.x * 2.0f,
+        maxValueSize.y + guiPainterButtonPadding.y * 2.0f
+    };
+    const Rectangle advanceBounds = {
+        bounds.x,
+        bounds.y,
+        bounds.width + (leftAligned == false ? textSize.x + GuiGetStyle(VALUEBOX, TEXT_PADDING) : 0.0f),
+        bounds.height
+    };
+    GuiPainterAdvanceCursorLine(advanceBounds);
+    if (GuiValueBox(bounds, text, &options->value, options->minValue, options->maxValue, options->edit))
     {
         options->edit = !options->edit;
         return true;
