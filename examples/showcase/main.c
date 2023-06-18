@@ -20,6 +20,7 @@ int main()
     bool TextBoxEdit = false;
     GuiPainterDropdownBoxOptions DropdownBoxOptions = { 0 };
     bool Checked = false;
+    GuiPainterValueBoxOptions ValueOptions = { 50, 0, 100, false };
 
     while (!WindowShouldClose())
     {
@@ -39,6 +40,7 @@ int main()
         GuiPainterTextBox(TextBox, sizeof(TextBox), &TextBoxEdit);
         GuiPainterDropdownBox("Red;Green;Blue", &DropdownBoxOptions);
         GuiPainterCheckBox("Check Box", &Checked);
+        GuiPainterValueBox("Value Box", &ValueOptions);
 
         EndDrawing();
     }
