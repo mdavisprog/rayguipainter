@@ -21,6 +21,7 @@ int main()
     GuiPainterDropdownBoxOptions DropdownBoxOptions = { 0 };
     bool Checked = false;
     GuiPainterValueBoxOptions ValueOptions = { 50, 0, 100, false };
+    GuiPainterSliderOptions SliderOptions = { 50.0f, 0.0f, 100.0f };
 
     while (!WindowShouldClose())
     {
@@ -41,6 +42,7 @@ int main()
         GuiPainterDropdownBox("Red;Green;Blue", &DropdownBoxOptions);
         GuiPainterCheckBox("Check Box", &Checked);
         GuiPainterValueBox("Value Box", &ValueOptions);
+        GuiPainterSlider("Slider", TextFormat("%.2f", SliderOptions.value), &SliderOptions);
 
         EndDrawing();
     }
