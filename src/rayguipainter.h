@@ -17,6 +17,12 @@ typedef struct GuiPainterValueBoxOptions {
     bool edit;
 } GuiPainterValueBoxOptions;
 
+typedef struct GuiPainterSliderOptions {
+    float value;
+    float minValue;
+    float maxValue;
+} GuiPainterSliderOptions;
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -35,6 +41,7 @@ bool GuiPainterCheckBox(const char* text, bool* checked);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
 bool GuiPainterValueBox(const char* text, GuiPainterValueBoxOptions* options);
 bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
+float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSliderOptions* options);
 
 #if defined(__cplusplus)
 }
@@ -50,6 +57,7 @@ static Vector2 guiPainterCursorSize = { 0.0f, 0.0f };
 static Vector2 guiPainterControlSpacing = { 4.0f, 4.0f };
 static Vector2 guiPainterButtonPadding = { 6.0f, 4.0f };
 static float guiPainterTextBoxWidth = 100.0f;
+static float guiPainterSliderWidth = 100.0f;
 
 static Vector2 GuiPainterTextSize(const char* text)
 {
@@ -287,6 +295,28 @@ bool GuiPainterTextBox(char* text, int textSize, bool* editMode)
         return true;
     }
     return false;
+}
+
+float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSliderOptions* options)
+{
+    const float textPadding = (float)GuiGetStyle(SLIDER, TEXT_PADDING);
+    const Vector2 textLeftSize = GuiPainterTextSize(textLeft);
+    const Vector2 textRightSize = GuiPainterTextSize(textRight);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x + textLeftSize.x + textPadding,
+        guiPainterCursorPos.y,
+        guiPainterSliderWidth,
+        (float)GuiGetStyle(DEFAULT, TEXT_SIZE) + guiPainterButtonPadding.y * 2.0f
+    };
+    const Rectangle advanceBounds = {
+        bounds.x,
+        bounds.y,
+        bounds.width + textRightSize.x + textPadding,
+        bounds.height
+    };
+    GuiPainterAdvanceCursorLine(advanceBounds);
+    options->value = GuiSlider(bounds, textLeft, textRight, options->value, options->minValue, options->maxValue);
+    return options->value;
 }
 
 #endif // RAYGUIPAINTER_IMPLEMENTATION
