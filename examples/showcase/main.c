@@ -22,6 +22,7 @@ int main()
     bool Checked = false;
     GuiPainterValueBoxOptions ValueOptions = { 50, 0, 100, false };
     GuiPainterSliderOptions SliderOptions = { 50.0f, 0.0f, 100.0f };
+    GuiPainterListViewOptions ListViewOptions = { 0, 0, 0 };
 
     while (!WindowShouldClose())
     {
@@ -43,6 +44,7 @@ int main()
         GuiPainterCheckBox("Check Box", &Checked);
         GuiPainterValueBox("Value Box", &ValueOptions);
         GuiPainterSlider("Slider", TextFormat("%.2f", SliderOptions.value), &SliderOptions);
+        GuiPainterListView("One;Two;Three;Four;Five;Six;Seven;Eight;Nine;Ten", &ListViewOptions);
 
         EndDrawing();
     }
