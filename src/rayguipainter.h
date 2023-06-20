@@ -23,6 +23,12 @@ typedef struct GuiPainterSliderOptions {
     float maxValue;
 } GuiPainterSliderOptions;
 
+typedef struct GuiPainterListViewOptions {
+    int scrollIndex;
+    int active;
+    int visibleListItems;
+} GuiPainterListViewOptions;
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -42,6 +48,7 @@ bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* optio
 bool GuiPainterValueBox(const char* text, GuiPainterValueBoxOptions* options);
 bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSliderOptions* options);
+int GuiPainterListView(const char* text, GuiPainterListViewOptions* options);
 
 #if defined(__cplusplus)
 }
@@ -317,6 +324,22 @@ float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSl
     GuiPainterAdvanceCursorLine(advanceBounds);
     options->value = GuiSlider(bounds, textLeft, textRight, options->value, options->minValue, options->maxValue);
     return options->value;
+}
+
+int GuiPainterListView(const char* text, GuiPainterListViewOptions* options)
+{
+    const int numVisible = options->visibleListItems > 0 ? options->visibleListItems : 5;
+    const float scrollBarWidth = (float)GuiGetStyle(LISTVIEW, SCROLLBAR_WIDTH);
+    const Vector2 maxSize = GuiPainterLargestTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        maxSize.x + guiPainterButtonPadding.x * 2.0f + scrollBarWidth,
+        ((float)GuiGetStyle(LISTVIEW, LIST_ITEMS_HEIGHT) + (float)GuiGetStyle(LISTVIEW, LIST_ITEMS_SPACING)) * (float)numVisible
+    };
+    GuiPainterAdvanceCursorLine(bounds);
+    options->active = GuiListView(bounds, text, &options->scrollIndex, options->active);
+    return options->active;
 }
 
 #endif // RAYGUIPAINTER_IMPLEMENTATION
