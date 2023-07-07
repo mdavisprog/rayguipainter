@@ -59,6 +59,7 @@ int GuiPainterListView(const char* text, GuiPainterListViewOptions* options);
 #if defined(RAYGUIPAINTER_IMPLEMENTATION)
 
 static Vector2 guiPainterCursorPos = { 0.0f, 0.0f };
+static Vector2 guiPainterCursorAnchorPos = { 0.0f, 0.0f };
 static Vector2 guiPainterCursorPrevPos = { 0.0f, 0.0f };
 static Vector2 guiPainterCursorSize = { 0.0f, 0.0f };
 static Vector2 guiPainterControlSpacing = { 4.0f, 4.0f };
@@ -112,13 +113,14 @@ static void GuiPainterAdvanceCursorLine(Rectangle controlBounds)
 {
     guiPainterCursorPrevPos.x = controlBounds.x + controlBounds.width;
     guiPainterCursorPrevPos.y = guiPainterCursorPos.y;
-    guiPainterCursorPos.x = 0.0f;
+    guiPainterCursorPos.x = guiPainterCursorAnchorPos.x;
     guiPainterCursorPos.y += controlBounds.height + guiPainterControlSpacing.y;
 }
 
 void GuiPainterSetCursorPos(Vector2 pos)
 {
     guiPainterCursorPos = pos;
+    guiPainterCursorAnchorPos = pos;
 }
 
 void GuiPainterSameLine()
