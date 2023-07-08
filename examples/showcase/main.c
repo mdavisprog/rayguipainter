@@ -36,6 +36,8 @@ int main()
         GuiPainterButton("Button");
         GuiPainterSameLine();
         GuiPainterButton("Button 2");
+        GuiPainterFillWidth();
+        GuiPainterButton("Expanded Button");
         GuiPainterLabelButton("Label Button");
         Toggle = GuiPainterToggle("Toggle", &Toggle);
         GuiPainterToggleGroup("One;Two;Three", &ToggleGroup);
