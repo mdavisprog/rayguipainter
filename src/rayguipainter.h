@@ -35,6 +35,7 @@ extern "C" {
 
 void GuiPainterSetCursorPos(Vector2 pos);
 void GuiPainterSameLine();
+void GuiPainterFillWidth();
 
 bool GuiPainterWindowBox(Vector2 size, const char* title);
 void GuiPainterLine(const char* text);
@@ -66,6 +67,7 @@ static Vector2 guiPainterControlSpacing = { 4.0f, 4.0f };
 static Vector2 guiPainterButtonPadding = { 6.0f, 4.0f };
 static float guiPainterTextBoxWidth = 100.0f;
 static float guiPainterSliderWidth = 100.0f;
+static bool guiPainterFillWidth = false;
 
 static Vector2 GuiPainterTextSize(const char* text)
 {
@@ -109,12 +111,41 @@ static Vector2 GuiPainterLargestTextSize(const char* text)
     return result;
 }
 
+static int GuiPainterItemCount(const char* text)
+{
+    int result = 1;
+
+    const char* ptr = text;
+    while (*ptr != 0)
+    {
+        if (*ptr == ';')
+        {
+            result++;
+        }
+
+        ptr++;
+    }
+
+    return result;
+}
+
 static void GuiPainterAdvanceCursorLine(Rectangle controlBounds)
 {
     guiPainterCursorPrevPos.x = controlBounds.x + controlBounds.width;
     guiPainterCursorPrevPos.y = guiPainterCursorPos.y;
     guiPainterCursorPos.x = guiPainterCursorAnchorPos.x;
     guiPainterCursorPos.y += controlBounds.height + guiPainterControlSpacing.y;
+    guiPainterFillWidth = false;
+}
+
+static float GuiPainterSuggestedWidth(float width, float padding)
+{
+    float result = width;
+    if (guiPainterFillWidth)
+    {
+        result = guiPainterCursorSize.x - (guiPainterCursorPos.x - guiPainterCursorAnchorPos.x) - (guiPainterControlSpacing.x * 2.0f) - padding;
+    }
+    return result;
 }
 
 void GuiPainterSetCursorPos(Vector2 pos)
@@ -126,6 +157,11 @@ void GuiPainterSetCursorPos(Vector2 pos)
 void GuiPainterSameLine()
 {
     guiPainterCursorPos = guiPainterCursorPrevPos;
+}
+
+void GuiPainterFillWidth()
+{
+    guiPainterFillWidth = true;
 }
 
 bool GuiPainterWindowBox(Vector2 size, const char* title)
@@ -163,7 +199,7 @@ bool GuiPainterButton(const char* text)
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x,
         guiPainterCursorPos.y,
-        textSize.x + guiPainterButtonPadding.x * 2.0f,
+        GuiPainterSuggestedWidth(textSize.x + guiPainterButtonPadding.x * 2.0f, 0.0f),
         textSize.y + guiPainterButtonPadding.y * 2.0f
     };
     GuiPainterAdvanceCursorLine(bounds);
@@ -176,7 +212,7 @@ bool GuiPainterLabelButton(const char* text)
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x,
         guiPainterCursorPos.y,
-        textSize.x + guiPainterButtonPadding.x * 2.0f,
+        GuiPainterSuggestedWidth(textSize.x + guiPainterButtonPadding.x * 2.0f, 0.0f),
         textSize.y + guiPainterButtonPadding.y * 2.0f
     };
     GuiPainterAdvanceCursorLine(bounds);
@@ -189,7 +225,7 @@ bool GuiPainterToggle(const char* text, bool* active)
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x,
         guiPainterCursorPos.y,
-        textSize.x + guiPainterButtonPadding.x * 2.0f,
+        GuiPainterSuggestedWidth(textSize.x + guiPainterButtonPadding.x * 2.0f, 0.0f),
         textSize.y + guiPainterButtonPadding.y * 2.0f
     };
     GuiPainterAdvanceCursorLine(bounds);
@@ -204,10 +240,11 @@ bool GuiPainterToggle(const char* text, bool* active)
 int GuiPainterToggleGroup(const char* text, int* active)
 {
     const Vector2 maxSize = GuiPainterLargestTextSize(text);
+    const int itemCount = GuiPainterItemCount(text);
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x,
         guiPainterCursorPos.y,
-        maxSize.x + guiPainterButtonPadding.x * 2.0f,
+        guiPainterFillWidth ? (GuiPainterSuggestedWidth(0.0f, guiPainterControlSpacing.x) / (float)itemCount) : maxSize.x + guiPainterButtonPadding.x * 2.0f,
         maxSize.y + guiPainterButtonPadding.y * 2.0f
     };
     GuiPainterAdvanceCursorLine(bounds);
@@ -250,7 +287,7 @@ bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* optio
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x,
         guiPainterCursorPos.y,
-        maxSize.x + guiPainterButtonPadding.x + (float)GuiGetStyle(DROPDOWNBOX, ARROW_PADDING) + RAYGUI_ICON_SIZE,
+        GuiPainterSuggestedWidth(maxSize.x + guiPainterButtonPadding.x + (float)GuiGetStyle(DROPDOWNBOX, ARROW_PADDING) + RAYGUI_ICON_SIZE, 0.0f),
         maxSize.y + guiPainterButtonPadding.y * 2.0f
     };
     GuiPainterAdvanceCursorLine(bounds);
@@ -270,7 +307,7 @@ bool GuiPainterValueBox(const char* text, GuiPainterValueBoxOptions* options)
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x + (leftAligned ? textSize.x + GuiGetStyle(VALUEBOX, TEXT_PADDING) : 0.0f),
         guiPainterCursorPos.y,
-        maxValueSize.x + guiPainterButtonPadding.x * 2.0f,
+        GuiPainterSuggestedWidth(maxValueSize.x + guiPainterButtonPadding.x * 2.0f, textSize.x),
         maxValueSize.y + guiPainterButtonPadding.y * 2.0f
     };
     const Rectangle advanceBounds = {
@@ -294,7 +331,7 @@ bool GuiPainterTextBox(char* text, int textSize, bool* editMode)
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x,
         guiPainterCursorPos.y,
-        guiPainterTextBoxWidth,
+        GuiPainterSuggestedWidth(guiPainterTextBoxWidth, 0.0f),
         boxSize.y + guiPainterButtonPadding.y * 2.0f
     };
     GuiPainterAdvanceCursorLine(bounds);
@@ -311,6 +348,10 @@ float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSl
     const float textPadding = (float)GuiGetStyle(SLIDER, TEXT_PADDING);
     const Vector2 textLeftSize = GuiPainterTextSize(textLeft);
     const Vector2 textRightSize = GuiPainterTextSize(textRight);
+    // TODO: The 'GuiSliderPro' function determines the active gui slider by its bounds. However, the bounds
+    // may change as the text sizes may not be the same between frames. 'raygui' has a definition for
+    // 'CHECK_BOUNDS_ID' which determines if the active slider bounds matches the currently drawn bounds.
+    // This may be overridden to provide a custom function for determining the active slider.
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x + textLeftSize.x + textPadding,
         guiPainterCursorPos.y,
@@ -336,7 +377,7 @@ int GuiPainterListView(const char* text, GuiPainterListViewOptions* options)
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x,
         guiPainterCursorPos.y,
-        maxSize.x + guiPainterButtonPadding.x * 2.0f + scrollBarWidth,
+        GuiPainterSuggestedWidth(maxSize.x + guiPainterButtonPadding.x * 2.0f + scrollBarWidth, 0.0f),
         ((float)GuiGetStyle(LISTVIEW, LIST_ITEMS_HEIGHT) + (float)GuiGetStyle(LISTVIEW, LIST_ITEMS_SPACING)) * (float)numVisible
     };
     GuiPainterAdvanceCursorLine(bounds);
