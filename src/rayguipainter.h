@@ -3,6 +3,10 @@
 
 #define RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT 24
 
+#if defined(RAYGUI_IMPLEMENTATION)
+    #define CHECK_BOUNDS_ID(src, dst) ((src.x == dst.x) && (src.y == dst.y))
+#endif
+
 #include "raygui.h"
 
 typedef struct GuiPainterDropdownBoxOptions {
@@ -348,14 +352,10 @@ float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSl
     const float textPadding = (float)GuiGetStyle(SLIDER, TEXT_PADDING);
     const Vector2 textLeftSize = GuiPainterTextSize(textLeft);
     const Vector2 textRightSize = GuiPainterTextSize(textRight);
-    // TODO: The 'GuiSliderPro' function determines the active gui slider by its bounds. However, the bounds
-    // may change as the text sizes may not be the same between frames. 'raygui' has a definition for
-    // 'CHECK_BOUNDS_ID' which determines if the active slider bounds matches the currently drawn bounds.
-    // This may be overridden to provide a custom function for determining the active slider.
     const Rectangle bounds = {
         guiPainterCursorPos.x + guiPainterControlSpacing.x + textLeftSize.x + textPadding,
         guiPainterCursorPos.y,
-        guiPainterSliderWidth,
+        GuiPainterSuggestedWidth(guiPainterSliderWidth, textLeftSize.x + textRightSize.x + textPadding + guiPainterControlSpacing.x),
         (float)GuiGetStyle(DEFAULT, TEXT_SIZE) + guiPainterButtonPadding.y * 2.0f
     };
     const Rectangle advanceBounds = {
