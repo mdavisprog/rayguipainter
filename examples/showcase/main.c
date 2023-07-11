@@ -36,6 +36,8 @@ int main()
         GuiPainterButton("Button");
         GuiPainterSameLine();
         GuiPainterButton("Button 2");
+        GuiPainterLabel("Lines can be skipped with 'GuiPainterNextLine'");
+        GuiPainterNextLine();
         GuiPainterFillWidth();
         GuiPainterButton("Expanded Button");
         GuiPainterLabelButton("Label Button");
