@@ -39,6 +39,7 @@ extern "C" {
 
 void GuiPainterSetCursorPos(Vector2 pos);
 void GuiPainterSameLine();
+void GuiPainterNextLine();
 void GuiPainterFillWidth();
 
 bool GuiPainterWindowBox(Vector2 size, const char* title);
@@ -161,6 +162,12 @@ void GuiPainterSetCursorPos(Vector2 pos)
 void GuiPainterSameLine()
 {
     guiPainterCursorPos = guiPainterCursorPrevPos;
+}
+
+void GuiPainterNextLine()
+{
+    const float height = GuiPainterTextSize(" ").y + guiPainterButtonPadding.y * 2.0f + guiPainterControlSpacing.y;
+    guiPainterCursorPos.y += height;
 }
 
 void GuiPainterFillWidth()
