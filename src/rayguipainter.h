@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 void GuiPainterSetCursorPos(Vector2 pos);
+Vector2 GuiPainterGetCursorPos();
 void GuiPainterSameLine();
 void GuiPainterNextLine();
 void GuiPainterFillWidth();
@@ -157,6 +158,11 @@ void GuiPainterSetCursorPos(Vector2 pos)
 {
     guiPainterCursorPos = pos;
     guiPainterCursorAnchorPos = pos;
+}
+
+Vector2 GuiPainterGetCursorPos()
+{
+    return guiPainterCursorPos;
 }
 
 void GuiPainterSameLine()
