@@ -372,7 +372,11 @@ float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSl
         bounds.height
     };
     GuiPainterAdvanceCursorLine(advanceBounds);
+#if RAYGUI_VERSION_MAJOR < 4
     options->value = GuiSlider(bounds, textLeft, textRight, options->value, options->minValue, options->maxValue);
+#else
+    GuiSlider(bounds, textLeft, textRight, &options->value, options->minValue, options->maxValue);
+#endif
     return options->value;
 }
 
@@ -388,7 +392,11 @@ int GuiPainterListView(const char* text, GuiPainterListViewOptions* options)
         ((float)GuiGetStyle(LISTVIEW, LIST_ITEMS_HEIGHT) + (float)GuiGetStyle(LISTVIEW, LIST_ITEMS_SPACING)) * (float)numVisible
     };
     GuiPainterAdvanceCursorLine(bounds);
+#if RAYGUI_VERSION_MAJOR < 4
     options->active = GuiListView(bounds, text, &options->scrollIndex, options->active);
+#else
+    GuiListView(bounds, text, &options->scrollIndex, &options->active);
+#endif
     return options->active;
 }
 
