@@ -24,6 +24,7 @@ int main()
     GuiPainterSliderOptions SliderOptions = { 50.0f, 0.0f, 100.0f };
     GuiPainterListViewOptions ListViewOptions = { 0, 0, 0 };
     Texture2D LogoTexture = LoadTexture(TextFormat("%s/resources/raylib_32x32.png", GetApplicationDirectory()));
+    const Rectangle SubTexture = { 0.0f, (float)LogoTexture.height * 0.5f, (float)LogoTexture.width, (float)LogoTexture.height * 0.5f };
 
     while (!WindowShouldClose())
     {
@@ -43,6 +44,7 @@ int main()
         GuiPainterButton("Expanded Button");
         GuiPainterLabelButton("Label Button");
         GuiPainterImage(LogoTexture, WHITE);
+        GuiPainterImageRec(LogoTexture, SubTexture, WHITE);
         Toggle = GuiPainterToggle("Toggle", &Toggle);
         GuiPainterToggleGroup("One;Two;Three", &ToggleGroup);
         GuiPainterTextBox(TextBox, sizeof(TextBox), &TextBoxEdit);
