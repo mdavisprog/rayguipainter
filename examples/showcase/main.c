@@ -23,6 +23,7 @@ int main()
     GuiPainterValueBoxOptions ValueOptions = { 50, 0, 100, false };
     GuiPainterSliderOptions SliderOptions = { 50.0f, 0.0f, 100.0f };
     GuiPainterListViewOptions ListViewOptions = { 0, 0, 0 };
+    Texture2D LogoTexture = LoadTexture(TextFormat("%s/resources/raylib_32x32.png", GetApplicationDirectory()));
 
     while (!WindowShouldClose())
     {
@@ -41,6 +42,7 @@ int main()
         GuiPainterFillWidth();
         GuiPainterButton("Expanded Button");
         GuiPainterLabelButton("Label Button");
+        GuiPainterImage(LogoTexture, WHITE);
         Toggle = GuiPainterToggle("Toggle", &Toggle);
         GuiPainterToggleGroup("One;Two;Three", &ToggleGroup);
         GuiPainterTextBox(TextBox, sizeof(TextBox), &TextBoxEdit);
@@ -53,6 +55,7 @@ int main()
         EndDrawing();
     }
 
+    UnloadTexture(LogoTexture);
     CloseWindow();
 
     return 0;
