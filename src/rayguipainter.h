@@ -56,6 +56,7 @@ bool GuiPainterValueBox(const char* text, GuiPainterValueBoxOptions* options);
 bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSliderOptions* options);
 int GuiPainterListView(const char* text, GuiPainterListViewOptions* options);
+bool GuiPainterImage(Texture2D texture, Color tint);
 
 #if defined(__cplusplus)
 }
@@ -404,6 +405,29 @@ int GuiPainterListView(const char* text, GuiPainterListViewOptions* options)
     GuiListView(bounds, text, &options->scrollIndex, &options->active);
 #endif
     return options->active;
+}
+
+bool GuiPainterImage(Texture2D texture, Color tint)
+{
+    const Vector2 position = { guiPainterCursorPos.x + guiPainterControlSpacing.x, guiPainterCursorPos.y };
+    const Rectangle bounds = {
+        position.x,
+        guiPainterCursorPos.y,
+        (float)texture.width,
+        (float)texture.height
+    };
+    GuiPainterAdvanceCursorLine(bounds);
+    bool result = false;
+    if (GuiGetState() != STATE_DISABLED && !GuiIsLocked())
+    {
+        const Vector2 mousePoint = GetMousePosition();
+        if (CheckCollisionPointRec(mousePoint, bounds))
+        {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) result = true;
+        }
+    }
+    DrawTextureV(texture, position, tint);
+    return result;
 }
 
 #endif // RAYGUIPAINTER_IMPLEMENTATION
