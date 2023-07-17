@@ -57,6 +57,7 @@ bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
 float GuiPainterSlider(const char* textLeft, const char* textRight, GuiPainterSliderOptions* options);
 int GuiPainterListView(const char* text, GuiPainterListViewOptions* options);
 bool GuiPainterImage(Texture2D texture, Color tint);
+bool GuiPainterImageRec(Texture2D texture, Rectangle source, Color tint);
 
 #if defined(__cplusplus)
 }
@@ -427,6 +428,29 @@ bool GuiPainterImage(Texture2D texture, Color tint)
         }
     }
     DrawTextureV(texture, position, tint);
+    return result;
+}
+
+bool GuiPainterImageRec(Texture2D texture, Rectangle source, Color tint)
+{
+    const Vector2 position = { guiPainterCursorPos.x + guiPainterControlSpacing.x, guiPainterCursorPos.y };
+    const Rectangle bounds = {
+        position.x,
+        position.y,
+        source.width,
+        source.height
+    };
+    GuiPainterAdvanceCursorLine(bounds);
+    bool result = false;
+    if (GuiGetState() != STATE_DISABLED && !GuiIsLocked())
+    {
+        const Vector2 mousePoint = GetMousePosition();
+        if (CheckCollisionPointRec(mousePoint, bounds))
+        {
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) result = true;
+        }
+    }
+    DrawTextureRec(texture, source, position, tint);
     return result;
 }
 
