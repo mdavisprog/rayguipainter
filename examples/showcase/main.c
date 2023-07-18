@@ -12,7 +12,8 @@ int main()
     SetTargetFPS(60);
 
     const Vector2 CursorPos = { 0.0f, 0.0f };
-    const Vector2 WindowBoxSize = { (float)WindowWidth, (float)WindowHeight };
+    const Vector2 WindowBoxSize = { (float)WindowWidth * 0.75f, (float)WindowHeight };
+    const Vector2 PanelSize = { (float)WindowWidth - WindowBoxSize.x, (float)WindowHeight };
 
     bool Toggle = false;
     int ToggleGroup = 0;
@@ -53,6 +54,11 @@ int main()
         GuiPainterValueBox("Value Box", &ValueOptions);
         GuiPainterSlider("Slider", TextFormat("%.2f", SliderOptions.value), &SliderOptions);
         GuiPainterListView("One;Two;Three;Four;Five;Six;Seven;Eight;Nine;Ten", &ListViewOptions);
+
+        const Vector2 PanelPos = { WindowBoxSize.x, 0.0f };
+        GuiPainterSetCursorPos(PanelPos);
+        GuiPainterPanel(PanelSize, "Panel");
+        GuiPainterLabel("Example panel");
 
         EndDrawing();
     }
