@@ -44,6 +44,7 @@ void GuiPainterNextLine();
 void GuiPainterFillWidth();
 
 bool GuiPainterWindowBox(Vector2 size, const char* title);
+void GuiPainterPanel(Vector2 size, const char* title);
 void GuiPainterLine(const char* text);
 void GuiPainterLabel(const char* text);
 bool GuiPainterButton(const char* text);
@@ -189,6 +190,13 @@ bool GuiPainterWindowBox(Vector2 size, const char* title)
     guiPainterCursorPos.y += RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT + guiPainterControlSpacing.y;
     guiPainterCursorSize = size;
     return GuiWindowBox(bounds, title);
+}
+
+void GuiPainterPanel(Vector2 size, const char* title)
+{
+    const Rectangle bounds = { guiPainterCursorPos.x, guiPainterCursorPos.y, size.x, size.y };
+    guiPainterCursorPos.y += RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT + guiPainterControlSpacing.y;
+    GuiPanel(bounds, title);
 }
 
 void GuiPainterLine(const char* text)
