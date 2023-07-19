@@ -39,6 +39,8 @@ extern "C" {
 
 void GuiPainterSetCursorPos(Vector2 pos);
 Vector2 GuiPainterGetCursorPos();
+void GuiPainterSetControlSpacing(Vector2 spacing);
+Vector2 GuiPainterGetControlSpacing();
 void GuiPainterSameLine();
 void GuiPainterNextLine();
 void GuiPainterFillWidth();
@@ -166,6 +168,16 @@ void GuiPainterSetCursorPos(Vector2 pos)
 Vector2 GuiPainterGetCursorPos()
 {
     return guiPainterCursorPos;
+}
+
+void GuiPainterSetControlSpacing(Vector2 spacing)
+{
+    guiPainterControlSpacing = spacing;
+}
+
+Vector2 GuiPainterGetControlSpacing()
+{
+    return guiPainterControlSpacing;
 }
 
 void GuiPainterSameLine()
