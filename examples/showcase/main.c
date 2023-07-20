@@ -62,6 +62,13 @@ int main()
         GuiPainterFillWidth();
         GuiPainterButton("Panel Button");
 
+        const Vector2 CursorSize = GuiPainterGetCursorSize();
+        const Vector2 NewCursorSize = { CursorSize.x * 0.5f, CursorSize.y };
+        GuiPainterLabel("Modify size of the cursor");
+        GuiPainterSetCursorSize(NewCursorSize);
+        GuiPainterFillWidth();
+        GuiPainterButton("Smaller Fill");
+
         EndDrawing();
     }
 
