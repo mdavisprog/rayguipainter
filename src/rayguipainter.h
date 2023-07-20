@@ -208,6 +208,7 @@ void GuiPainterPanel(Vector2 size, const char* title)
 {
     const Rectangle bounds = { guiPainterCursorPos.x, guiPainterCursorPos.y, size.x, size.y };
     guiPainterCursorPos.y += RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT + guiPainterControlSpacing.y;
+    guiPainterCursorSize = size;
     GuiPanel(bounds, title);
 }
 
