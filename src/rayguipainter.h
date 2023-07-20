@@ -41,6 +41,8 @@ void GuiPainterSetCursorPos(Vector2 pos);
 Vector2 GuiPainterGetCursorPos();
 void GuiPainterSetControlSpacing(Vector2 spacing);
 Vector2 GuiPainterGetControlSpacing();
+void GuiPainterSetCursorSize(Vector2 size);
+Vector2 GuiPainterGetCursorSize();
 void GuiPainterSameLine();
 void GuiPainterNextLine();
 void GuiPainterFillWidth();
@@ -178,6 +180,16 @@ void GuiPainterSetControlSpacing(Vector2 spacing)
 Vector2 GuiPainterGetControlSpacing()
 {
     return guiPainterControlSpacing;
+}
+
+void GuiPainterSetCursorSize(Vector2 size)
+{
+    guiPainterCursorSize = size;
+}
+
+Vector2 GuiPainterGetCursorSize()
+{
+    return guiPainterCursorSize;
 }
 
 void GuiPainterSameLine()
