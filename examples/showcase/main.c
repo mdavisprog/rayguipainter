@@ -59,6 +59,8 @@ int main()
         GuiPainterSetCursorPos(PanelPos);
         GuiPainterPanel(PanelSize, "Panel");
         GuiPainterLabel("Example panel");
+        GuiPainterFillWidth();
+        GuiPainterButton("Panel Button");
 
         EndDrawing();
     }
