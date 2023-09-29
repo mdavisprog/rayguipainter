@@ -5,6 +5,9 @@
 
 int main()
 {
+    printf("Using raylib version %d.%d.%d\n", RAYLIB_VERSION_MAJOR, RAYLIB_VERSION_MINOR, RAYLIB_VERSION_PATCH);
+    printf("Using raygui version %d.%d.%d\n", RAYGUI_VERSION_MAJOR, RAYGUI_VERSION_MINOR, RAYGUI_VERSION_PATCH);
+
     const int WindowWidth = 960;
     const int WindowHeight = 540;
 
