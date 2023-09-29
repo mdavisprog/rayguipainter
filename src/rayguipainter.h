@@ -56,6 +56,7 @@ bool GuiPainterLabelButton(const char* text);
 bool GuiPainterToggle(const char* text, bool* active);
 int GuiPainterToggleGroup(const char* text, int* active);
 bool GuiPainterCheckBox(const char* text, bool* checked);
+int GuiPainterComboBox(const char* text, int* active);
 bool GuiPainterDropdownBox(const char* text, GuiPainterDropdownBoxOptions* options);
 bool GuiPainterValueBox(const char* text, GuiPainterValueBoxOptions* options);
 bool GuiPainterTextBox(char* text, int textSize, bool* editMode);
@@ -330,6 +331,24 @@ bool GuiPainterCheckBox(const char* text, bool* checked)
     return *checked;
 #else
     return GuiCheckBox(bounds, text, checked);
+#endif
+}
+
+int GuiPainterComboBox(const char* text, int* active)
+{
+    const Vector2 maxSize = GuiPainterLargestTextSize(text);
+    const Rectangle bounds = {
+        guiPainterCursorPos.x + guiPainterControlSpacing.x,
+        guiPainterCursorPos.y,
+        GuiPainterSuggestedWidth(maxSize.x + guiPainterButtonPadding.x + (float)GuiGetStyle(COMBOBOX, COMBO_BUTTON_WIDTH) + (float)GuiGetStyle(COMBOBOX, COMBO_BUTTON_SPACING), 0.0f),
+        maxSize.y + guiPainterButtonPadding.y * 2.0f
+    };
+    GuiPainterAdvanceCursorLine(bounds);
+#if RAYGUI_VERSION_MAJOR < 4
+    *active = GuiComboBox(bounds, text, *active);
+    return *active;
+#else
+    return GuiComboBox(bounds, text, active);
 #endif
 }
 
