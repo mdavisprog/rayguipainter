@@ -26,6 +26,7 @@ int main()
     GuiPainterListViewOptions ListViewOptions = { 0, 0, 0 };
     Texture2D LogoTexture = LoadTexture(TextFormat("%s/resources/raylib_32x32.png", GetApplicationDirectory()));
     const Rectangle SubTexture = { 0.0f, (float)LogoTexture.height * 0.5f, (float)LogoTexture.width, (float)LogoTexture.height * 0.5f };
+    int ComboBox = 0;
 
     while (!WindowShouldClose())
     {
@@ -53,6 +54,7 @@ int main()
         GuiPainterCheckBox("Check Box", &Checked);
         GuiPainterValueBox("Value Box", &ValueOptions);
         GuiPainterSlider("Slider", TextFormat("%.2f", SliderOptions.value), &SliderOptions);
+        GuiPainterComboBox("C++;Python;Lua", &ComboBox);
         GuiPainterListView("One;Two;Three;Four;Five;Six;Seven;Eight;Nine;Ten", &ListViewOptions);
 
         const Vector2 PanelPos = { WindowBoxSize.x, 0.0f };
